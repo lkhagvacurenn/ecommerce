@@ -7,7 +7,11 @@ export default {
   theme: {
     extend: {
       colors:{
-        textColor:"#4B5563",
+        spanClr:"#4B5563",
+        boxBgClr:"#F8FAFC",
+        starClr: "#FBBF24",
+        primaryClr:"#0EA5E9",
+        secondaryClr: "#111827",
       }
     },
   },

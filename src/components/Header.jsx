@@ -2,7 +2,7 @@ import { NavLink } from "react-router-dom";
 import SearchBox from "./SearchBox";
 const Header = () => {
   return (
-    <div className='flex justify-between items-center py-3 gap-5 border-b border-slate-200 text-textColor'>
+    <div className='flex justify-between items-center py-3 gap-5 border-b border-slate-200'>
       {/*mobile logo */}
       <NavLink to="/" className="block sm:hidden">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

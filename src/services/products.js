@@ -16,7 +16,7 @@ export  async function getProducts() {
 export  async function getBestSellerProducts() {
   try {
     const res = await axios.get(BASE);
-    return res.data.products.slice(0,5);
+    return res.data.products.slice(0,10);
   } catch (err) {
     console.error("Error fetching products:", err);
     return []; 
@@ -26,7 +26,7 @@ export  async function getBestSellerProducts() {
 export  async function getRecommendedProducts() {
   try {
     const res = await axios.get(BASE);
-    return res.data.products.slice(5,10);
+    return res.data.products.slice(5,15);
   } catch (err) {
     console.error("Error fetching products:", err);
     return []; 

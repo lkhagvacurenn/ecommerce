@@ -1,0 +1,4 @@
+div {
+    scrollbar-width: none;
+    scroll-behavior: smooth;
+}

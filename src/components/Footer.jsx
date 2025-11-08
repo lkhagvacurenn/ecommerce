@@ -2,14 +2,13 @@ import { NavLink } from "react-router-dom"
 
 const Footer = () => {
   return (
-    <div className="w-full border-t border-slate-200 pb-3">
+    <div className="w-full border-t border-slate-200 my-5">
         <div className="w-full flex flex-col sm:flex-row flex-wrap justify-between">
             <ul className="pt-3" >
                 <div className="flex flex-col w-fit">
                     <h3 className="font-bold text-xl ">NEXTON</h3> 
                     <p className="ml-auto text-[12px] ">eCommerce</p>
-                </div>
-                
+                </div>   
                 <li className="flex items-center gap-1 mt-1">
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <g clipPath="url(#clip0_22_1407)">
@@ -76,7 +75,7 @@ const Footer = () => {
 
             <ul className="pt-3">
                 <h4 className="font-bold text-l">Getting started</h4>
-                <li className="mt-1"><NavLink to="">Release Notes</NavLink></li>
+                <li className="mt-1 hover:text-primaryClr"><NavLink to="/about">About us</NavLink></li>
                 <li><NavLink to="">Upgrade Guide</NavLink></li>
                 <li><NavLink to="">Browser Support</NavLink></li>
                 <li><NavLink to="">Dark mode</NavLink></li>

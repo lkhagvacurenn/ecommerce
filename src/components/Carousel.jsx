@@ -1,14 +1,15 @@
-import { useRef, useState, useEffect, useCallback } from 'react';
-import './HorizontalScroll.css'
-import ProductCard from "./ProductCard"
+// Carousel.jsx
+import React, { useRef, useState, useEffect, useCallback } from 'react';
+import './Carousel.css';
 
-const HorizontalScroll = ({ title, products }) => {
+const Carousel = ({ title, data, card }) => {
   const [activeId, setActiveId] = useState(null);
-  const productRef = useRef(null); 
-  const containerRef = useRef(null); 
+  const dRef = useRef(null);
+  const containerRef = useRef(null);
+
   function getMap() {
-    if (!productRef.current) productRef.current = new Map();
-    return productRef.current;
+    if (!dRef.current) dRef.current = new Map();
+    return dRef.current;
   }
 
   function scrollHorizontal(id) {
@@ -16,9 +17,9 @@ const HorizontalScroll = ({ title, products }) => {
     const node = map.get(id);
     if (!node) return;
     node.scrollIntoView({
-      behavior: "smooth",
-      block: "nearest",
-      inline: "start", 
+      behavior: 'smooth',
+      block: 'nearest',
+      inline: 'start',
     });
   }
 
@@ -43,7 +44,7 @@ const HorizontalScroll = ({ title, products }) => {
     for (const [id, node] of map.entries()) {
       if (!node) continue;
       const rect = node.getBoundingClientRect();
-      
+
       const isVisible = rect.right > containerLeft && rect.left < containerRight;
       if (!isVisible) continue;
 
@@ -52,16 +53,14 @@ const HorizontalScroll = ({ title, products }) => {
       if (distFromLeft >= -TOLERANCE && distFromLeft < bestDist) {
         bestDist = distFromLeft;
         chosenId = id;
-      } else if (chosenId === null && distFromLeft < bestDist) {
-        bestDist = distFromLeft;
+      } else if (chosenId === null && Math.abs(distFromLeft) < bestDist) {
+        bestDist = Math.abs(distFromLeft);
         chosenId = id;
       }
     }
 
     if (chosenId !== null) {
-      setActiveId((prevActiveId) => {
-        return chosenId !== prevActiveId ? chosenId : prevActiveId;
-      });
+      setActiveId((prev) => (chosenId !== prev ? chosenId : prev));
     }
   }, []);
 
@@ -78,7 +77,6 @@ const HorizontalScroll = ({ title, products }) => {
     };
 
     container.addEventListener('scroll', onScroll, { passive: true });
-
     updateActiveByScroll();
 
     return () => {
@@ -87,49 +85,46 @@ const HorizontalScroll = ({ title, products }) => {
     };
   }, [updateActiveByScroll]);
 
+  // render card via the provided component prop
+  const Card = card;
   const sentences = title.split(/[.!?]\s*/);
-
+  
   return (
     <div className="my-5">
       <h2 className="font-bold text-[24px]">
         {sentences[0]}. <span className="text-spanClr hidden sm:inline">{sentences[1]}</span>
       </h2>
-
-      {/* Product Container */}
       <div
         ref={containerRef}
-        className='w-full h-fit mt-2 flex overflow-x-auto gap-5'
-        style={{ scrollSnapType: 'x mandatory' }} 
+        className="w-full h-fit mt-2 flex overflow-x-auto gap-5"
+        style={{ scrollSnapType: 'x mandatory' }}
       >
-        {products.map((product) => (
+        {data.map((d) => (
           <div
-            key={product.id}
+            key={d.id}
             ref={(node) => {
               const map = getMap();
-              if (node) {
-                map.set(product.id, node);
-              } else {
-                map.delete(product.id);
-              }
+              if (node) map.set(d.id, node);
+              else map.delete(d.id);
             }}
+            style={{ display: 'inline-block', scrollSnapAlign: 'start' }}
           >
-            <ProductCard product={product} />
+            <Card d={d} />
           </div>
         ))}
       </div>
 
-      {/* Scroller dot container */}
-      <ul className='flex justify-center gap-2'>
-        {products.map((p) => (
-          <li key={p.id}>
-            <button onClick={() => handleClick(p.id)} aria-label={`Go to ${p.id}`}>
+      <ul className="flex justify-center gap-2">
+        {data.map((d) => (
+          <li key={d.id}>
+            <button onClick={() => handleClick(d.id)} aria-label={`Go to ${d.id}`}>
               <svg width="6" height="6" viewBox="0 0 6 6" xmlns="http://www.w3.org/2000/svg">
                 <rect
                   opacity="0.8"
                   width="6"
                   height="6"
                   rx="3"
-                  fill={p.id === activeId ? "#111827" : "#11182799"}
+                  fill={d.id === activeId ? '#111827' : '#11182799'}
                 />
               </svg>
             </button>
@@ -138,6 +133,6 @@ const HorizontalScroll = ({ title, products }) => {
       </ul>
     </div>
   );
-}
+};
 
-export default HorizontalScroll;
+export default Carousel;

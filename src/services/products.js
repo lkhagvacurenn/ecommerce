@@ -16,7 +16,9 @@ export  async function getProducts() {
 export  async function getBestSellerProducts() {
   try {
     const res = await axios.get(BASE);
-    return res.data.products.slice(0,10);
+    const products = res.data.products;
+    const bestSellers = products.sort((a,b)=>a.rating-b.rating).slice(0,10);
+    return bestSellers
   } catch (err) {
     console.error("Error fetching products:", err);
     return []; 
@@ -26,9 +28,21 @@ export  async function getBestSellerProducts() {
 export  async function getRecommendedProducts() {
   try {
     const res = await axios.get(BASE);
-    return res.data.products.slice(5,15);
+    const products = res.data.products;
+    const recommendedProducts = products.sort((a,b) => a.discountPercentage-b.discountPercentage).slice(0,10);
+    return recommendedProducts;
   } catch (err) {
     console.error("Error fetching products:", err);
     return []; 
   }
 };
+
+export async function getCategories() {
+  try{
+    const res = await axios.get(`${BASE}/categories`);
+    return res.data.map((d) => ({ id: d.slug, name:d.name, url:d.url }));;
+  }catch(err) {
+      console.error("Error fetching products:", err);
+      return [];
+    }
+}

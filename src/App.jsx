@@ -10,7 +10,7 @@ import About from "./pages/About"
 function App() {
 
   return (
-    <div className="max-w-7xl w-full  mx-auto px-5 min-h-screen flex flex-col text-secondaryClr">
+    <div className="max-w-7xl w-full  mx-auto px-5 min-h-screen flex flex-col text-secondaryClr ">
     <Header/>
     <Routes>
       <Route index element = {<Home/>}></Route>

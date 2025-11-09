@@ -1,12 +1,12 @@
 
-const ProductCard = ({product}) => {
-    const price = Number(product.price ?? 0);
-    const discount = Number(product.discountPercentage ?? 0);
+const ProductCard = ({d}) => {
+    const price = Number(d.price ?? 0);
+    const discount = Number(d.discountPercentage ?? 0);
     const newPrice =
     discount > 0 ? (price - (price * discount) / 100).toFixed(2) : price;
 
-    const count = product.reviews.length;
-    const starTotal = product.reviews.reduce((acc, r) => acc + (r.rating ?? 0), 0);
+    const count = d.reviews.length;
+    const starTotal = d.reviews.reduce((acc, r) => acc + (r.rating ?? 0), 0);
     const avgStar = count ? (starTotal / count).toFixed(1) : "5.0";
    
   return (
@@ -18,16 +18,16 @@ const ProductCard = ({product}) => {
                 <path fillRule="evenodd" clipRule="evenodd" d="M11.3333 4.66675H12.7584C13.8077 4.66675 14.6786 5.47765 14.7534 6.52426L15.1275 11.7626C15.2654 13.6922 13.7371 15.3334 11.8027 15.3334H4.19722C2.26275 15.3334 0.734525 13.6922 0.872351 11.7626L1.24652 6.52426C1.32128 5.47765 2.19215 4.66675 3.24143 4.66675H4.66661V4.00008C4.66661 2.15914 6.159 0.666748 7.99994 0.666748C9.84088 0.666748 11.3333 2.15914 11.3333 4.00008V4.66675ZM5.99994 4.66675H9.99994V4.00008C9.99994 2.89551 9.10451 2.00008 7.99994 2.00008C6.89537 2.00008 5.99994 2.89551 5.99994 4.00008V4.66675ZM3.24143 6.00008C2.89167 6.00008 2.60138 6.27037 2.57646 6.61925L2.20231 11.8576C2.1196 13.0153 3.03653 14.0001 4.19722 14.0001H11.8027C12.9634 14.0001 13.8803 13.0153 13.7976 11.8576L13.4234 6.61925C13.3985 6.27037 13.1082 6.00008 12.7584 6.00008H3.24143Z" fill="#4B5563"/>
                 </svg>
             </button>
-            <img className="mx-auto w-[80%] object-cover " src={product.images[0]} alt="product.title"/>
+            <img className="mx-auto w-[80%] object-cover " src={d.images[0]} alt="d.title"/>
         </div>
         <article className="">
             <div className="flex justify-between text-[14px] gap-1">
                 <p className="flex flex-col w-full max-w-[70%]">
                     <strong className="font-bold truncate ">
-                        {product.title}
+                        {d.title}
                     </strong>
                     <span className="text-spanClr">
-                        {product.category}
+                        {d.category}
                     </span>
                 </p>
                  <p className="flex flex-col">
@@ -35,7 +35,7 @@ const ProductCard = ({product}) => {
                         ${newPrice}
                     </strong>
                     <span className="text-spanClr line-through">
-                        ${product.price}
+                        ${d.price}
                     </span>
                 </p>
             </div>

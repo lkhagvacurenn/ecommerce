@@ -40,9 +40,19 @@ export  async function getRecommendedProducts() {
 export async function getCategories() {
   try{
     const res = await axios.get(`${BASE}/categories`);
-    return res.data.map((d) => ({ id: d.slug, name:d.name, url:d.url }));;
+    return res.data.slice(0,5).map((d) => ({ id: d.slug, name:d.name, url:d.url }));;
   }catch(err) {
       console.error("Error fetching products:", err);
       return [];
     }
 }
+
+export  async function getProductById(id) {
+  try {
+    const res = await axios.get(`${BASE}/${id}`);
+    return res.data;
+  } catch (err) {
+    console.error("Error fetching products:", err);
+    return []; 
+  }
+};

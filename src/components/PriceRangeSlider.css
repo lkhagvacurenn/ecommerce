@@ -1,0 +1,23 @@
+.thumb,
+.thumb::-webkit-slider-thumb{
+    -webkit-appearance: none;
+    -webkit-tap-highlight-color: transparent;
+}
+.thumb{
+    pointer-events: none;
+    position: absolute;
+    height: 0;
+    outline: none;
+}
+
+.thumb::-webkit-slider-thumb{
+    background-color: white;
+    border: 1px solid var(--primaryClr);
+    border-radius: 50%;
+    cursor: pointer;
+    height: 16px;
+    width: 16px;
+    margin-top: 8px;
+    pointer-events: all;
+    position: relative;
+}

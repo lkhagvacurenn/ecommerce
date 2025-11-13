@@ -1,5 +1,5 @@
 import React from 'react'
-import ContactForm from '../components/ContactForm.jsx'
+import ContactForm from '../components/forms/ContactForm.jsx'
 const About = () => {
   return (
     <div className='text-justify'>

@@ -1,14 +1,12 @@
 import { NavLink } from "react-router-dom"
+import Logo from "./Logo"
 
 const Footer = () => {
   return (
-    <div className="w-full border-t border-slate-200 my-5">
+    <div className="w-full border-t-2 border-boxBgClr my-5">
         <div className="w-full flex flex-col sm:flex-row flex-wrap justify-between">
             <ul className="pt-3" >
-                <div className="flex flex-col w-fit">
-                    <h3 className="font-bold text-xl ">NEXTON</h3> 
-                    <p className="ml-auto text-[12px] ">eCommerce</p>
-                </div>   
+                <Logo/> 
                 <li className="flex items-center gap-1 mt-1">
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <g clipPath="url(#clip0_22_1407)">
@@ -100,7 +98,7 @@ const Footer = () => {
 
         {/* Policies */}
 
-        <div className="mt-3 pt-3 flex flex-wrap border-t border-slate-200 justify-center sm:justify-around gap-5">
+        <div className="mt-3 pt-3 flex flex-wrap border-t-2 border-boxBgClr justify-center sm:justify-around gap-5">
             <p>Next eCommerce.©2024</p>
             <div className="flex gap-1">
                <img src="../../public/payment/visa.png" alt="visa" className="w-[56px] object-cover" /> 

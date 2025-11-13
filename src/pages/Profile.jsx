@@ -1,8 +1,10 @@
 import React from 'react'
-
+import UserLog from '../components/forms/UserLog'
 const Profile = () => {
   return (
-    <div>Profile</div>
+    <div className='mx-auto'>
+      <UserLog/>
+    </div>
   )
 }
 

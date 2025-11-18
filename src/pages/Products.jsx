@@ -1,25 +1,19 @@
-import  { useEffect, useState } from 'react'
+import  { useContext } from 'react'
 import SideBar from '../components/SideBar'
 import Pagination from '../components/Pagination'
-import { getProducts } from '../services/products'
+import ProductContext from '../context/ProductsContext'
 const Products = () => {
-  const [products,setProducts] = useState([]);
-  useEffect(()=>{
-    (async ()=> {
-      try{
-        const productsAsync = await getProducts();
-        setProducts(productsAsync || []);
-      }catch(err){
-        console.error(err);
-      }
-    })()
-  },[])
+ const { filteredProducts, loading } = useContext(ProductContext);
+
+  if (loading) {
+    return <div className="p-6 text-center">Loading products...</div>;
+  }
   return (
     <div className='sm:flex my-5'>
       <div className='hidden sm:block'>
           <SideBar/>
       </div>
-      <Pagination products={products}/>
+      <Pagination products={filteredProducts}/>
     </div>
   )
 }

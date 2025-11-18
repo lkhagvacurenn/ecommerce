@@ -1,9 +1,37 @@
-import React from 'react'
 import CheckoutForm from '../components/forms/CheckoutForm'
 import { FaRegUser, FaSearchLocation, FaWallet } from 'react-icons/fa'
 import Button from '../components/buttons/Button'
+import FavContext from '../context/FavContext'
+import ProductContext from '../context/ProductsContext'
+import { useContext, useEffect, useState } from 'react'
+import CheckoutCard from '../components/CheckoutCard'
 
 const Checkout = () => {
+    const {favs} = useContext(FavContext);
+    const {fetchProductById} = useContext(ProductContext);
+    const [products,setProducts] = useState([]);
+    
+    useEffect(()=>{
+        if (!favs || favs.length === 0) {
+        setProducts([])
+        return
+        }
+        (async ()=> {
+            try{
+               const items = await Promise.all(favs.map((fav) => 
+                Promise.resolve(fetchProductById(fav)).catch((e) => {
+                console.error('Failed to fetch product', fav, e)
+                return null
+                })))
+                setProducts(items.filter(Boolean));
+            } catch(err){
+                console.error(err);
+            }
+        })()
+    },[favs,fetchProductById])
+    console.log(products)
+ if(products.length === 0)
+    return (<p className='mx-auto my-auto text-2xl text-red-500 h-40'>Empty basket</p>)
   return (
     <>
         <h1 className='basis-full font-bold text-2xl'>Checkout</h1>
@@ -44,14 +72,14 @@ const Checkout = () => {
             <div className='basis-[50%]'>
                 <h2>Order summary</h2>
                 <ul className='w-full my-5'>
-                    <li className='border-t'>product list will be here</li>
-                    <li className='border-t'>product list will be here</li>
+                    {products.map(p =>(
+                        <CheckoutCard key={p.id} id={p.id} product={p}/>
+                    ))}
                     <Button  width='full'>Confirm Order</Button>
                 </ul>
             </div>
         </div>
     </>
-    
     
   )
 }

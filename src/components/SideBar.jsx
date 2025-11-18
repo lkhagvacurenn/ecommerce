@@ -26,7 +26,8 @@ const SideBar = () => {
                     return(
                     <li key={c.id}>
                             <label className="inline-flex items-center gap-2">
-                                <input type="checkbox" name={c.name} value={c.name} />
+                                <input type="radio" name='category
+                                ' value={c.name} />
                                 <span>{c.name}</span>
                             </label>                   
                         </li> 

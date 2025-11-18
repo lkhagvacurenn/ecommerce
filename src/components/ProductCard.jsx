@@ -1,23 +1,19 @@
 import { useNavigate } from 'react-router-dom';
 import {FaStar} from 'react-icons/fa'
-import LikeBtn from "./buttons/LikeBtn.jsx";
+import ProductThumbnail from './ProductThumbnail';
 const ProductCard = ({d}) => {
+    
     const price = Number(d.price ?? 0);
     const discount = Number(d.discountPercentage ?? 0);
     const newPrice =
     discount > 0 ? (price - (price * discount) / 100).toFixed(2) : price;
-
     const count = d.reviews.length;
-    const starTotal = d.reviews.reduce((acc, r) => acc + (r.rating ?? 0), 0);
-    const avgStar = count ? (starTotal / count).toFixed(1) : "5.0";
-
     const navigate = useNavigate();
    
   return (
     <div onClick={()=> navigate(`/products/${d.id}`)} className="bg-white w-60 p-2 mx-auto">
-        <div className=" w-full h-60 p-2 rounded-md bg-boxBgClr">
-            <LikeBtn key={d.id}/>
-            <img className="mx-auto w-[80%] object-cover " src={d.thumbnail} alt="d.title"/>
+        <div className='relative flex justify-center w-full h-60 p-2 rounded-md bg-boxBgClr'>
+            <ProductThumbnail img={d.thumbnail} id={d.id} width='full'/>
         </div>
         <article className="">
             <div className="flex justify-between text-[14px] gap-1">
@@ -40,7 +36,7 @@ const ProductCard = ({d}) => {
             </div>
             <div className="flex gap-1 items-center">
                 <FaStar className="fill-starClr"/>
-                <p>{avgStar}</p>
+                <p>${d.rating}</p>
                 <p>({count})</p>
             </div>
         </article>

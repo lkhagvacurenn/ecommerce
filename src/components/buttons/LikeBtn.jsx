@@ -1,15 +1,18 @@
-import { useState } from 'react';
 import { FaShoppingBasket } from 'react-icons/fa';
-const LikeBtn = () => {
-  const [isLiked, setLike] = useState(false);
+import { useContext } from 'react';
+import FavContext from '../../context/FavContext';
+const LikeBtn = ({id}) => {
+  const {isFav, toggleFav} = useContext(FavContext);
+   const favorited = isFav(id);
   const handleClick = (e) => {
     e.stopPropagation();
-    setLike(!isLiked);
+    toggleFav(id);
   }
   return (
     <button
+    type='button'
       onClick={handleClick}
-      className={`flex justify-self-end p-2 rounded-2xl bg-white hover:text-primaryClr selection:text-primaryClr ${isLiked ? 'text-primaryClr' : ''}`}
+      className={`flex justify-self-end p-2 rounded-2xl bg-white selection:text-primaryClr ${favorited ? 'text-primaryClr' : ''}`}
      >
       <FaShoppingBasket />
     </button>

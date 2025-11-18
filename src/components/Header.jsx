@@ -1,8 +1,15 @@
 import { NavLink } from "react-router-dom";
+import FavContext from "../context/FavContext";
 import { FaRegUser, FaShoppingBasket } from "react-icons/fa";
 import SearchBox from "./SearchBox";
 import Logo from "./Logo";
+import { useContext } from "react";
 const Header = () => {
+  let count = '';
+  const {favCount} = useContext(FavContext);
+  if(favCount >10)
+    count = '10+';
+  else count = favCount;
   return (
     <div className='sticky top-0 z-50 bg-white flex justify-between items-center py-5 gap-2 border-b-2 border-boxBgClr'>
       {/*mobile logo */}
@@ -31,8 +38,9 @@ const Header = () => {
           <NavLink to="/profile" className={({isActive}) => isActive ? "text-primaryClr" : ""}>
             <FaRegUser className="w-5 h-5"/>
           </NavLink>
-          <NavLink to="/checkout" className={({isActive}) => isActive ? "text-primaryClr" : ""}>
+          <NavLink to="/checkout" className='relative'>
               <FaShoppingBasket className="w-6 h-6"/>
+              {favCount>0 ? <span className="absolute -top-1 left-2 bg-primaryClr text-white text-[12px] px-2 rounded-xl">{count}</span> :""}
           </NavLink>
       </div>
 

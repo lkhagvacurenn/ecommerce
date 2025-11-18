@@ -1,9 +1,17 @@
-
-export const CategoryCard = ({d}) => {
+import { useNavigate } from 'react-router-dom';
+    
+const CategoryCard = ({d}) => {
+  const navigate = useNavigate();
+    const handleChange = (e)=> {
+            const params = new URLSearchParams();
+            if (e.target.value) params.set("category", e.target.value);
+            const qs = params.toString();
+            navigate(qs ? `/products?${qs}` : '/products');
+            }
   return (
     <div className='flex rounded-lg border border-secondaryClr min-w-80 items-center p-1 justify-around'>
         <p className='flex flex-col font-bold text-lg'>{d.name} <span className='text-spanClr text-sm'>Explore {d.name}</span></p>
-        <button className='flex items-center gap-1 border-l-2 p-1 text-md'>SHOP NOW
+        <button onChange={handleChange} value={d.slug} className='flex items-center gap-1 border-l-2 p-1 text-md'>SHOP NOW
             <svg width="13" height="9" viewBox="0 0 13 9" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M12.339 4.07998L8.56698 0.159979C8.47108 0.0533123 8.34855 -2.09808e-05 8.19937 -2.09808e-05C8.05019 -2.09808e-05 7.92766 0.0506458 7.83176 0.151979C7.73586 0.253312 7.68791 0.375979 7.68791 0.519979C7.68791 0.66398 7.73586 0.789312 7.83176 0.895979L10.7567 3.93598H0.511462C0.372941 3.93598 0.253067 3.98665 0.15184 4.08798C0.0506134 4.18931 0 4.31198 0 4.45598C0 4.59998 0.0506134 4.72531 0.15184 4.83198C0.253067 4.93865 0.372941 4.99198 0.511462 4.99198H10.7567L7.83176 8.01598C7.73586 8.12265 7.68791 8.24798 7.68791 8.39198C7.68791 8.53598 7.73852 8.66131 7.83975 8.76798C7.94097 8.87465 8.06085 8.92798 8.19937 8.92798C8.33789 8.92798 8.46043 8.87465 8.56698 8.76798L12.339 4.83198C12.4456 4.72531 12.4988 4.60531 12.4988 4.47198C12.4988 4.33865 12.4456 4.20798 12.339 4.07998Z" fill="#4B5563"/>
             </svg>
@@ -11,3 +19,5 @@ export const CategoryCard = ({d}) => {
     </div>
   )
 }
+
+export default CategoryCard;

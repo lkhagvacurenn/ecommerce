@@ -2,7 +2,7 @@ import React, { useContext, useMemo } from "react";
 import Carousel from "../components/Carousel";
 import ProductCard from "../components/ProductCard";
 import FooterHero from "../components/FooterHero";
-import { CategoryCard } from "../components/CategoryCard";
+import  CategoryCard  from "../components/ui/CategoryCard.jsx";
 import ProductContext  from "../context/ProductsContext"; // use the hook from the provider
 
 const Home = () => {

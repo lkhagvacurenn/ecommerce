@@ -17,7 +17,7 @@ export function ProductProvider({ children }) {
   // filters state (UI updates this)
   const [filters, setFilters] = useState({
     q: searchParams.get("q") || "",
-    category: "",
+    category: searchParams.get("category") || "",
     priceMin: "",
     priceMax: "",
     ratingMin: "",
@@ -85,7 +85,7 @@ export function ProductProvider({ children }) {
   // optional server-side category fetch helper
   const serverCategoryFetch = useCallback(async (category) => {
     if (!category) return [];
-    const res = await getProductsByCategory(category, { limit: 5 });
+    const res = await getProductsByCategory(category, { limit: 10 });
     return Array.isArray(res.products) ? res.products : [];
   }, []);
 

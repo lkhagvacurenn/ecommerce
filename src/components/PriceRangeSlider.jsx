@@ -42,12 +42,13 @@ const PriceRangeSlider = ({
 
     const handleMinValueChange = (e) =>{  
         const value = Math.min(Number(e.target.value), maxVal-1);
-            setMinVal(value) 
+            setMinVal(value)  
     }
     const handleMaxValueChange = (e) => {
         const value = Math.max(Number(e.target.value), minVal+1);
             setMaxVal(value) 
     }
+
   return (
         <div className=' mt-5 border-t border-slate-200'>
             <h2 className="font-bold text-xl">Price range</h2>

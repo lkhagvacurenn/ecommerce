@@ -1,12 +1,31 @@
 // src/contexts/ProductsContext.jsx
 import { useSearchParams } from "react-router-dom";
-import React, { createContext, useCallback, useEffect, useMemo, useState } from "react";
-import { getProducts, getCategories, getProductById, searchProducts, getProductsByCategory } from "../services/products";
+import  {
+  createContext,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+import {
+  getProducts,
+  getCategories,
+  getProductById,
+  searchProducts,
+  getProductsByCategory,
+} from "../services/products";
 
 const ProductContext = createContext(null);
 
+function parseNumberOrNull(v) {
+  if (v == null || v === "") return null;
+  const n = Number(v);
+  return Number.isFinite(n) ? n : null;
+}
+
 export function ProductProvider({ children }) {
   const [searchParams] = useSearchParams();
+
   const [allProducts, setAllProducts] = useState([]); // all products (fetched once)
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -14,35 +33,57 @@ export function ProductProvider({ children }) {
   const [categories, setCategories] = useState([]);
   const [catsLoading, setCatsLoading] = useState(false);
 
-  // filters state (UI updates this)
-  const [filters, setFilters] = useState({
+  // filters state: use numbers (null when not set) for numeric filters
+  const [filters, setFilters] = useState(() => ({
     q: searchParams.get("q") || "",
     category: searchParams.get("category") || "",
-    priceMin: "",
-    priceMax: "",
-    ratingMin: "",
-    sort: "", // 'price-asc' | 'price-desc' | 'rating'
-  });
+    priceMin: parseNumberOrNull(searchParams.get("priceMin")),
+    priceMax: parseNumberOrNull(searchParams.get("priceMax")),
+    ratingMin: parseNumberOrNull(searchParams.get("ratingMin")),
+    sort: searchParams.get("sort") || "", // 'price-asc' | 'price-desc' | 'rating' | 'title-asc' | 'title-desc'
+  }));
 
+  // sync from URL -> filters (whenever URL changes)
   useEffect(() => {
     const q = searchParams.get("q") || "";
+    const category = searchParams.get("category") || "";
+    const priceMin = parseNumberOrNull(searchParams.get("priceMin"));
+    const priceMax = parseNumberOrNull(searchParams.get("priceMax"));
+    const ratingMin = parseNumberOrNull(searchParams.get("ratingMin"));
+    const sort = searchParams.get("sort") || "";
+
     setFilters((prev) => {
-      // avoid unnecessary setState if same
-      if (prev.q === q) return prev;
-      return { ...prev, q };
+      if (
+        prev.q === q &&
+        prev.category === category &&
+        prev.priceMin === priceMin &&
+        prev.priceMax === priceMax &&
+        prev.ratingMin === ratingMin &&
+        prev.sort === sort
+      ) {
+        return prev;
+      }
+      return {
+        ...prev,
+        q,
+        category,
+        priceMin,
+        priceMax,
+        ratingMin,
+        sort,
+      };
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
-  // fetch ALL products once (cheap for DummyJSON ~100 items)
+  // fetch all products once
   useEffect(() => {
     let mounted = true;
     (async () => {
       setLoading(true);
       setError(null);
       try {
-        // fetch all (set high limit to get all items)
-        const data = await getProducts({ limit: 200, skip: 0 });
+        const data = await getProducts({ limit: 100, skip: 0 });
         if (!mounted) return;
         setAllProducts(Array.isArray(data.products) ? data.products : []);
       } catch (err) {
@@ -75,28 +116,24 @@ export function ProductProvider({ children }) {
     return () => (mounted = false);
   }, []);
 
-  // optional server-side search helper (if you prefer calling API for every search)
+  // optional server helpers (kept)
   const serverSearch = useCallback(async (q) => {
     if (!q) return [];
-    const res = await searchProducts(q, { limit: 5 });
+    const res = await searchProducts(q);
     return Array.isArray(res.products) ? res.products : [];
   }, []);
 
-  // optional server-side category fetch helper
   const serverCategoryFetch = useCallback(async (category) => {
     if (!category) return [];
-    const res = await getProductsByCategory(category, { limit: 10 });
+    const res = await getProductsByCategory(category, );
     return Array.isArray(res.products) ? res.products : [];
   }, []);
 
-  // filter logic (client-side)
+  // client-side filtering + sorts (supports alphabetical)
   const filteredProducts = useMemo(() => {
     let out = Array.isArray(allProducts) ? allProducts.slice() : [];
 
     const { q, category, priceMin, priceMax, ratingMin, sort } = filters;
-
-    // If you want server-search for performance you can uncomment below:
-    // if (q) return serverSearch(q); // note: serverSearch returns a Promise -> then handle differently
 
     if (q) {
       const low = String(q).toLowerCase();
@@ -111,20 +148,23 @@ export function ProductProvider({ children }) {
       out = out.filter((p) => String(p.category) === String(category));
     }
 
-    if (priceMin !== "" && priceMin != null) {
-      out = out.filter((p) => Number(p.price ?? 0) >= Number(priceMin));
+    if (priceMin != null) {
+      out = out.filter((p) => Number(p.price ?? 0) >= priceMin);
     }
-    if (priceMax !== "" && priceMax != null) {
-      out = out.filter((p) => Number(p.price ?? 0) <= Number(priceMax));
+    if (priceMax != null) {
+      out = out.filter((p) => Number(p.price ?? 0) <= priceMax);
     }
-    if (ratingMin !== "" && ratingMin != null) {
-      out = out.filter((p) => Number(p.rating ?? 0) >= Number(ratingMin));
+    if (ratingMin != null) {
+      out = out.filter((p) => Number(p.rating ?? 0) >= ratingMin);
     }
 
+    // sorts (including alphabet)
+        // sorts (rating and newest added)
     if (sort) {
       if (sort === "price-asc") out.sort((a, b) => (a.price ?? 0) - (b.price ?? 0));
       else if (sort === "price-desc") out.sort((a, b) => (b.price ?? 0) - (a.price ?? 0));
-      else if (sort === "rating") out.sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0));
+      else if (sort === "rating") out.sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0)); // higher rating first
+      else if (sort === "newest") out.sort((a, b) => (b.id ?? 0) - (a.id ?? 0)); // newest by id desc
     }
 
     return out;
@@ -159,7 +199,18 @@ export function ProductProvider({ children }) {
       serverCategoryFetch,
       fetchProductById,
     }),
-    [allProducts, filteredProducts, loading, error, filters, categories, catsLoading, serverSearch, serverCategoryFetch, fetchProductById]
+    [
+      allProducts,
+      filteredProducts,
+      loading,
+      error,
+      filters,
+      categories,
+      catsLoading,
+      serverSearch,
+      serverCategoryFetch,
+      fetchProductById,
+    ]
   );
 
   return <ProductContext.Provider value={value}>{children}</ProductContext.Provider>;

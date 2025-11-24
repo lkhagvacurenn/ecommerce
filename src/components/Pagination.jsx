@@ -11,7 +11,8 @@ const Pagination = ({products}) => {
   return (
     <div className='w-full'>
         <ProductsGrid products={currentProducts}/>
-        <div className='flex gap-1 items-center justify-end'>
+        <div className='ml-auto max-w-48 w-fit overflow-x-scroll'>
+            <div className='flex gap-1 items-center justify-start'>
             { Array.from({length:pagesLength}, (_,i)=>i+1).map((page) => (
                 <button 
                 key={page} 
@@ -25,6 +26,8 @@ const Pagination = ({products}) => {
             ))
             }
         </div>
+        </div>
+        
     </div>
   )
 }

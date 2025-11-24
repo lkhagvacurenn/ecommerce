@@ -2,7 +2,7 @@ import  { useContext } from 'react'
 import { useNavigate } from 'react-router-dom';
 import ProductContext from '../../context/ProductsContext';
 const CategoryList = () => {
-    const {categories} = useContext(ProductContext);
+    const {categories,filters} = useContext(ProductContext);
     const navigate = useNavigate();
     const handleChange = (e)=> {
             const params = new URLSearchParams();
@@ -19,7 +19,8 @@ const CategoryList = () => {
                     <li key={c.id}>
                             <label className="inline-flex items-center gap-2">
                                 <input type="radio" name='category' onChange={handleChange}
-                                 value={c.slug} />
+                                 value={c.slug} 
+                                 checked={String(filters.category || "") === String(typeof c === "string" ? c : c.slug)}/>
                                 <span>{c.name}</span>
                             </label>                   
                         </li> 

@@ -3,7 +3,7 @@ import axios from "axios";
 
 const BASE = "https://dummyjson.com/products";
 
-export async function getProducts({ limit = 50, skip = 0 } = {}) {
+export async function getProducts({ limit = 100, skip = 0 } = {}) {
   try {
     const res = await axios.get(BASE, { params: { limit, skip } });
     // res.data: { products, total, skip, limit }
@@ -14,7 +14,7 @@ export async function getProducts({ limit = 50, skip = 0 } = {}) {
   }
 }
 
-export async function getProductsByCategory(category, { limit = 5, skip = 0 } = {}) {
+export async function getProductsByCategory(category, { limit = 100, skip = 0 } = {}) {
   try {
     const res = await axios.get(`${BASE}/category/${encodeURIComponent(category)}`, {
       params: { limit, skip },
@@ -27,7 +27,7 @@ export async function getProductsByCategory(category, { limit = 5, skip = 0 } = 
   }
 }
 
-export async function searchProducts(q, { limit = 20, skip = 0 } = {}) {
+export async function searchProducts(q, { limit = 100, skip = 0 } = {}) {
   try {
     const res = await axios.get(`${BASE}/search`, { params: { q, limit, skip } });
     return res.data; // { products, total, skip, limit }
@@ -41,7 +41,7 @@ export async function getCategories() {
   try {
     const res = await axios.get(`${BASE}/categories`);
     // res.data is an array of strings
-    return Array.isArray(res.data) ? res.data : [];
+    return Array.isArray(res.data) ? res.data.slice(0,10) : [];
   } catch (err) {
     console.error("Error fetching categories:", err);
     throw err;

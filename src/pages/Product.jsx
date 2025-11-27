@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getProductById } from "../services/products";
+import { getProductById } from "../services/api";
 import {FaStar, FaMinus,FaPlus} from 'react-icons/fa'
 import Button from '../components/buttons/Button'
 import Comment from "../components/Comment";

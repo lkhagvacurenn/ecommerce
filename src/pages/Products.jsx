@@ -1,7 +1,7 @@
 import  { useEffect, useState } from 'react'
 import SideBar from '../components/SideBar'
 import Pagination from '../components/Pagination'
-import { getProducts } from '../services/products'
+import { getProducts } from '../services/api'
 const Products = () => {
   const [products,setProducts] = useState([]);
   useEffect(()=>{

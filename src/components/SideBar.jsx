@@ -1,5 +1,5 @@
 import React, {useEffect, useState } from 'react'
-import {getCategories} from '../services/products'
+import {getCategories} from '../services/api'
 import PriceRangeSlider from './PriceRangeSlider';
 const SideBar = () => {
     const [categories, setCategories] = useState([]);

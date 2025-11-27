@@ -1,4 +1,4 @@
-import { getBestSellerProducts, getCategories, getRecommendedProducts } from '../services/products'
+import { getBestSellerProducts, getCategories, getRecommendedProducts } from '../services/api'
 import Carousel from '../components/Carousel'
 import ProductCard from '../components/ProductCard';
 import { useEffect, useState } from 'react';

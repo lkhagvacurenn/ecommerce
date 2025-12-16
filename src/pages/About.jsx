@@ -1,5 +1,3 @@
-import React from 'react'
-import ContactForm from '../components/forms/ContactForm.jsx'
 const About = () => {
   return (
     <div className='text-justify'>
@@ -119,7 +117,6 @@ const About = () => {
                         </div>
                     </div>
                 </div>
-               <ContactForm/>
             </div>
             
         </div>

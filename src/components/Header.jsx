@@ -1,17 +1,21 @@
 import { NavLink } from "react-router-dom";
-import FavContext from "../context/FavContext";
 import { FaRegUser, FaShoppingBasket } from "react-icons/fa";
+import { IoMenu, IoClose } from "react-icons/io5";
+import { GiRolledCloth } from "react-icons/gi";
 import SearchBox from "./SearchBox";
 import Logo from "./Logo";
-import { useContext } from "react";
+import { useCart } from "../context/CartContext";
+import { useState } from "react";
 const Header = () => {
-  let count = '';
-  const {favCount} = useContext(FavContext);
-  if(favCount >10)
-    count = '10+';
-  else count = favCount;
+  const [mobileMenuOpen, setmobileMenuOpen] = useState(false);
+  let printCount ='';
+  const { cart } = useCart();
+  const count = cart?.items?.length || 0;
+  if(count > 10)
+    printCount = '10+';
+  else printCount = count;
   return (
-    <div className='sticky top-0 z-50 bg-white flex justify-between items-center py-5 gap-2 border-b-2 border-boxBgClr'>
+    <div className='sticky top-0 z-30 bg-white flex justify-between items-center py-5 gap-2 border-b-2 border-boxBgClr'>
       {/*mobile logo */}
       <NavLink to="/" className="block sm:hidden">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -40,18 +44,42 @@ const Header = () => {
           </NavLink>
           <NavLink to="/checkout" className='relative'>
               <FaShoppingBasket className="w-6 h-6"/>
-              {favCount>0 ? <span className="absolute -top-1 left-2 bg-primaryClr text-white text-[12px] px-2 rounded-xl">{count}</span> :""}
+              {count>0 ? <span className="absolute -top-1 left-2 bg-primaryClr text-white text-[12px] px-2 rounded-xl">{printCount}</span> :""}
           </NavLink>
       </div>
 
       {/*mobile menu */}
-      <button className="block sm:hidden">
-        <svg width="32" height="28" viewBox="0 0 32 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="8" y="8" width="16" height="2" rx="1" fill="#4B5563"/>
-        <rect x="8" y="13" width="16" height="2" rx="1" fill="#4B5563"/>
-        <rect x="8" y="18" width="16" height="2" rx="1" fill="#4B5563"/>
-        </svg>
+      <button className="block sm:hidden" onClick={()=> setmobileMenuOpen(true)}>
+       <IoMenu className="text-2xl"/>
       </button>
+
+      {mobileMenuOpen && 
+      <div className="fixed top-0 left-0 w-screen h-screen bg-white">
+          <button className="fixed top-5 right-5" onClick={()=> setmobileMenuOpen(false)}>
+              <IoClose className="text-2xl"/>
+          </button>
+          <div className='mt-12 p-5'>
+            <NavLink to="/profile" onClick={()=> setmobileMenuOpen(false)} className={({isActive}) => `flex gap-2  ${isActive ? "text-primaryClr" : "text-gray-700"}`}>
+              <FaRegUser className="w-5 h-5"/> Profile
+            </NavLink>
+            <NavLink to="/checkout" onClick={() => setmobileMenuOpen(false)} className={({ isActive }) => `flex gap-2 transition-colors ${isActive ? "text-primaryClr" : "text-gray-700"}`}>            
+                <FaShoppingBasket className="w-6 h-6"/> Checkout
+            </NavLink>
+            <NavLink to="/products" onClick={() => setmobileMenuOpen(false)} className={({ isActive }) => `flex gap-2 transition-colors ${isActive ? "text-primaryClr" : "text-gray-700"}`}>            
+                <GiRolledCloth className="w-6 h-6"/> Products
+            </NavLink>
+              <img
+              className="w-full aspect-auto rounded-full mt-10"
+               src="https://www.shutterstock.com/image-vector/cute-kawaii-cat-illustration-adorable-600nw-2647492379.jpg" 
+               alt="cute" 
+               />
+          </div>
+          <NavLink to="/" onClick={() => setmobileMenuOpen(false)} className="fixed bottom-5 left-1/2 -translate-x-1/2 flex flex-col w-fit text-black ">
+                      <h3 className="font-bold text-xl ">NEXTON</h3> 
+                      <p className="ml-auto text-[12px] ">eCommerce</p>
+          </NavLink>
+      </div>
+      }
       
     </div>
     

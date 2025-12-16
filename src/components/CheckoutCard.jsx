@@ -1,55 +1,92 @@
 import { useNavigate } from "react-router-dom";
-import { calculatePrice } from "../utils/CalculatePrice";
-import FavContext from "../context/FavContext";
 import Counter from "./Counter";
-import { useState, useContext, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useCart } from "../context/CartContext";
+import { FaTrashAlt } from "react-icons/fa";
 
-const CheckoutCard = ({ product }) => {
-  const { toggleFav} = useContext(FavContext);
+const CheckoutCard = ({ cartItem }) => {
   const navigate = useNavigate();
-  const [orderCount, setOrderCount] = useState(1);
+  const { updateItem,removeItem } = useCart();
 
-  function handleClick(delta, e) {
+  const [orderCount, setOrderCount] = useState(cartItem.qty);
+  const [loading, setLoading] = useState(false);
+
+  // keep local state in sync if cart updates from elsewhere
+  useEffect(() => {
+    setOrderCount(cartItem.qty);
+  }, [cartItem.qty]);
+
+  async function handleClick(delta, e) {
     e?.stopPropagation();
 
-    setOrderCount((prev) => {
-      const stock = Number(product?.stock ?? Infinity);
-      const next = Math.min(Math.max(prev + delta, 0), stock);
-      return next;
-    });
+    const stock = Number(cartItem.product?.stock ?? 0);
+    const next = Math.min(Math.max(orderCount + delta, 1), stock);
+    if (next === orderCount) return;
+
+    setOrderCount(next);
+    setLoading(true);
+
+    try {
+      await updateItem({
+        productID: cartItem.product.id || cartItem.product._id,
+        qty: next
+      });
+    } catch (err) {
+      console.error("Failed to update cart item", err);
+      // rollback on failure
+      setOrderCount(cartItem.qty);
+    } finally {
+      setLoading(false);
+    }
   }
 
-  useEffect(() => {
-    if (orderCount === 0 ) {
-        toggleFav(product.id);
-    }
-  }, [orderCount, product.id, toggleFav]);
+  const goToProduct = () =>
+    navigate(`/products/${cartItem.product.id || cartItem.product._id}`);
 
-  if (orderCount === 0) return null;
-
-  const { totalPrice, totalNewPrice } = calculatePrice(
-    product.price,
-    product.discountPercentage,
-    orderCount
-  );
+  const unitPrice =
+    typeof cartItem.product.newPrice === "number"
+      ? cartItem.product.newPrice
+      : cartItem.product.price;
 
   return (
     <li
-      onClick={() => navigate(`/products/${product.id}`)}
-      className="cursor-pointer flex items-center gap-3 mb-2"
+      onClick={goToProduct}
+      className="cursor-pointer flex h-fit gap-3 mb-2"
     >
       <img
-        src={product.thumbnail}
+        src={cartItem.product.images?.[0]}
         alt="product img"
-        className="w-16 object-contain aspect-square border rounded-md"
+        className="w-16 object-cover aspect-square border rounded-md"
       />
-      <small>
-        <p className="text-sm font-bold mb-2">{product.title}</p>
-        <Counter orderCount={orderCount} onClick={handleClick} stock={product.stock} />
+
+      <small className="flex flex-col w-full items-start justify-between">
+        <p className="text-sm font-bold">
+          {cartItem.product.title}
+        </p>
+          <Counter
+          key={cartItem.product.id}
+          orderCount={orderCount}
+          onClick={handleClick}
+          stock={cartItem.product.stock}
+          disabled={loading}
+         />
+       
       </small>
-      <p className="ml-auto flex flex-col">
-        <span>${totalNewPrice}</span>
-        <span className="line-through">${totalPrice}</span>
+
+      <p className="flex flex-col w-full items-end justify-between">
+        <span>${(unitPrice * orderCount).toFixed(2)}</span>
+        {cartItem.product.discountPercent > 0 && (
+          <span className="line-through text-red-500 text-sm">
+            ${(cartItem.product.price * orderCount).toFixed(2)}
+          </span>
+        )}
+        <FaTrashAlt
+          className="mt-3 text-red-500 hover:text-red-700 cursor-pointer"
+          onClick={async (e) => {
+            e.stopPropagation();
+            await removeItem(cartItem.product.id || cartItem.product._id);
+          }}
+        />
       </p>
     </li>
   );

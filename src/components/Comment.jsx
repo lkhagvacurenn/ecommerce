@@ -4,7 +4,7 @@ const Comment = ({ review }) => {
     <li className="mb-2">
       <p className="flex gap-1 items-center font-semibold">
         <FaRegUserCircle/>
-        {review.reviewerName}
+        {review.user.name}
         </p>
       <p>{review.comment}</p>
       <small className="text-gray-400">

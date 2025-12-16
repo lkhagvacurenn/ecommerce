@@ -1,13 +1,13 @@
 import ProductsGrid from './ProductsGrid'
 import {  useState } from 'react';
-const Pagination = ({products}) => {
+const Pagination = ({products = []}) => {
     const [currentPage, setCurrentPage] = useState(1);
     const pageLength = 8;
-    const pagesLength = Math.ceil(products.length/pageLength);
-
+    const productList = Array.isArray(products) ? products : [];
+    const pagesLength = Math.ceil(productList.length/pageLength);
     const indexOfLast = currentPage * pageLength;
     const indexOfFirst = indexOfLast - pageLength;
-    const currentProducts = products.slice(indexOfFirst,indexOfLast);   
+    const currentProducts = productList.slice(indexOfFirst,indexOfLast);   
   return (
     <div className='w-full'>
         <ProductsGrid products={currentProducts}/>

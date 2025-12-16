@@ -1,7 +1,7 @@
 
-const Button = ({onClick,type,width,children}) => {
+const Button = ({onClick,type,width='fit',children}) => {
   return (
-    <button onClick={onClick} className={`py-1 px-3 bg-black text-white rounded-2xl transition ease-in-out hover:opacity-80 w-${width}`} type={type}>
+    <button onClick={onClick} className={`flex rounded-2xl transition-all duration-150 hover:scale-105 active:scale-95 active:bg-gray-100 py-1 px-3 bg-black text-white text-sm h-fit   w-${width}`} type={type}>
         {children}
     </button>
   )

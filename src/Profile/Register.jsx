@@ -1,17 +1,36 @@
+import { NavLink, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import Button from "../buttons/Button";
+import Button from "../components/buttons/Button";
 import {FaRegEyeSlash, FaRegEye} from 'react-icons/fa'
-const UserLog = () => {
-    const [isUser,setUser] = useState(true);
+import { registerUser } from "../services/api";
+
+const Register = () => {
     const [email,setEmail] = useState('');
+    const [name,setName] = useState('');
     const [password,setPassword] = useState('');
     const [rePassword,setRePassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [showRePassword, setShowRePassword] = useState(false);
+    const [res, setRes] = useState({success: false, message: ''});
+    
+    const navigate = useNavigate();
 
-    function handleClick(e){
+    async function handleClick(e){
         e.preventDefault();
-        alert('successfull')
+        const res = await registerUser({ name, email, password });
+        setRes(res);
+        try {
+            if (!res.success) throw new Error(res.message);
+            // Profile component reads localStorage to determine logged-in state
+            navigate('/profile');
+        } catch (error) {
+            console.error("Registration failed:", error);
+         }
+        
+    }
+
+    function handleName(e){
+        setName(e.target.value)
     }
     function handlePassword(e){
         setPassword(e.target.value)
@@ -22,12 +41,18 @@ const UserLog = () => {
     function handleRePassword(e){
         setRePassword(e.target.value);
     }
+
+
   return (
-    <div className="py-12">
+    <div className="py-12 max-w-80 w-full mx-auto">
         <form className='flex flex-col gap-3 min-w-80' onSubmit={handleClick}>
             <h1 className='text-center font-bold text-3xl'>
-                {isUser ? 'Login' : 'Register' }
+                Register
             </h1>
+            <label htmlFor="name" className='flex flex-col font-bold'>
+                Name
+                <input value={name} onChange={handleName} className='font-normal outline-none border border-secondaryClr rounded-md p-1' type="text" placeholder='Enter your name' id="name" name="name" autoComplete="name"/>
+            </label>
             <label htmlFor="email" className='flex flex-col font-bold'>
                 Email
                 <input value={email} onChange={handleEmail} className='font-normal outline-none border border-secondaryClr rounded-md p-1' type="email" placeholder='example@example.com' id="email" name="email" autoComplete="email"/>
@@ -45,7 +70,6 @@ const UserLog = () => {
                 </div>
                 
             </label>
-            {!isUser && 
                 <label className='flex flex-col font-bold' htmlFor="repPassword">
                     Password (Again)
                     <div className="border border-secondaryClr rounded-md py-1 px-3 flex justify-between">
@@ -61,15 +85,15 @@ const UserLog = () => {
                         {(password === rePassword || rePassword ==='' ) ? '': 'It does not match the password'}
                     </p>            
                 </label>
-            }
-            <Button className='py-1 bg-black text-white rounded-lg transition ease-in-out hover:opacity-80' type='submit'>Continue</Button>
+            {!res.success && <span className='text-red-500'>{res.message}</span>}
+            <Button className='py-1 bg-black text-white rounded-lg transition ease-in-out hover:opacity-80' type='submit'>Register</Button>
         </form>
         <div className="mt-5 border-t-2 text-center border-secondaryClr">
-            {isUser ? <p>New User? <button className="text-blue-500 hover:text-blue-600" onClick={()=>setUser(false)}>Create an account</button></p> : <p>Already a member? <button className="text-blue-500 hover:text-blue-600" onClick={() =>setUser(true)}>Login</button></p>}
+            <NavLink to="/profile/login" className="text-blue-500 hover:text-blue-600">Already have an account? Login</NavLink>
         </div>
     </div>
     
   )
 }
 
-export default UserLog
+export default Register
